@@ -13,7 +13,7 @@
 // 🪤 TRAMPA: el checkbox NO usa e.target.value. Usa e.target.checked.
 //    Si la IA te lo resuelve con .value, detectalo y corregilo.
 
-import { useState } from "react";
+import { useState, ChangeEvent, FormEvent } from "react";
 // TODO: importá los tipos de eventos que necesites desde "react"
 //       (pista: ChangeEvent, FormEvent)
 
@@ -22,10 +22,18 @@ import { useState } from "react";
 //           aceptaTerminos (boolean)
 interface FormularioRegistro {
   // ...
+  nombre: string;
+  email: string;
+  edad: number;
+  aceptaTerminos: boolean;
 }
 
 const ESTADO_INICIAL: FormularioRegistro = {
   // TODO 2: valores iniciales coherentes con la interface
+  nombre: "",
+  email: "",
+  edad: 0,
+  aceptaTerminos: false
 };
 
 export function App() {
@@ -33,18 +41,24 @@ export function App() {
   //   (sí, acá se podría inferir; lo tipamos explícito a propósito para
   //    documentar el contrato del formulario)
   const [form, setForm] = useState(ESTADO_INICIAL);
+  useState<FormularioRegistro>(ESTADO_INICIAL);
 
   // TODO 4: handleChange tipado.
   //   Ojo: para el checkbox usá e.target.checked (boolean),
   //   para el resto e.target.value.
   //   Tip: e.target.type === "checkbox" para distinguir.
-  const handleChange = (/* e: ??? */) => {
-    // ...
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    setForm({
+      ...form,
+      [name]: type === "checkbox" ? checked : type === "number" ? Number(value) : value
+    });
   };
 
   // TODO 5: handleSubmit tipado. preventDefault + console.log(form)
-  const handleSubmit = (/* e: ??? */) => {
-    // ...
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log(form);
   };
 
   return (
